@@ -4,9 +4,32 @@ const hit = document.getElementById('hit');
 const dead = document.getElementById('dead');
 const enemy = document.getElementById('enemy');
 const again = document.getElementById('again');
+const header = document.querySelector('.header');
+
+const game = {
+    ships: [
+        {
+            location: ['36', '46', '56', '66'],
+            hit: ['','','','']
+        },
+        {
+            location: ['14', '15', '16'],
+            hit: ['','','']
+        },
+        {
+            location: ['69', '79'],
+            hit: ['','']
+        },
+        {
+            location: ['00'],
+            hit: ['']
+        }
+    ],
+    shipCount: 4,
+};
 
 const play = {
-    record: 0,
+    record: localStorage.getItem('seaBattleRecord') || 0,
     shot: 0,
     hit: 0,
     dead: 0,
@@ -23,14 +46,14 @@ const play = {
 };
 
 const show = {
-    hit() {
-
+    hit(e) {
+        this.changeClass(e, 'hit');
     },
     miss(e) {
         this.changeClass(e, 'miss');
     },
-    dead() {
-
+    dead(e) {
+        this.changeClass(e, 'dead');
     },
     changeClass(e, value) {
         e.className = value;
@@ -39,12 +62,48 @@ const show = {
 
 const fire = (e) => {
     const target = e.target;
+    if (target.classList.length !== 0 || target.tagName !== 'TD' || game.shipCount < 1 ) return;
+    
     show.miss(target);
     play.updateData = 'shot';
+
+    for (let i = 0; i < game.ships.length; i++) {
+        const ship = game.ships[i];
+        const index = ship.location.indexOf(target.id);
+        if (index >= 0) {
+            show.hit(target);
+            play.updateData = 'hit';
+            ship.hit[index] = 'x';
+            const life = ship.hit.indexOf('');
+            if (life < 0) {
+                play.updateData = 'dead';
+                for (const id of ship.location) {
+                    show.dead(document.getElementById(id));
+                };
+
+                game.shipCount -= 1;
+
+                if(game.shipCount < 1) {
+                    header.textContent = 'Game Over';
+                    header.style.color = 'red';
+                    if (play.shot < play.record || play.record === 0) {
+                        localStorage.setItem('seaBattleRecord', play.shot);
+                        play.record = play.shot;
+                        play.render();
+                    }
+                }
+            }
+        }
+    }
 };
 
 const init = () => {
     enemy.addEventListener('click', fire);
+    play.render();
+
+    again.addEventListener('click', () => {
+        location.reload();
+    })
 };
 
 init();
