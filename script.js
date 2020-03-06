@@ -137,7 +137,7 @@ const fire = (e) => {
                 play.updateData = 'dead';
                 for (const id of ship.location) {
                     show.dead(document.getElementById(id));
-                };
+                }
 
                 game.shipCount -= 1;
 
