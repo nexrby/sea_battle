@@ -168,9 +168,6 @@ const init = () => {
         play.record = 0;
         play.render();
     });
-
-    console.log(game);
-
 };
 
 init();
