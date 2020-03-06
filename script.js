@@ -7,18 +7,17 @@ const again = document.getElementById('again');
 const header = document.querySelector('.header');
 
 const game = {
-    ships: [
-        {
+    ships: [{
             location: ['36', '46', '56', '66'],
-            hit: ['','','','']
+            hit: ['', '', '', '']
         },
         {
             location: ['14', '15', '16'],
-            hit: ['','','']
+            hit: ['', '', '']
         },
         {
             location: ['69', '79'],
-            hit: ['','']
+            hit: ['', '']
         },
         {
             location: ['00'],
@@ -62,8 +61,8 @@ const show = {
 
 const fire = (e) => {
     const target = e.target;
-    if (target.classList.length !== 0 || target.tagName !== 'TD' || game.shipCount < 1 ) return;
-    
+    if (target.classList.length !== 0 || target.tagName !== 'TD' || !game.shipCount) return;
+
     show.miss(target);
     play.updateData = 'shot';
 
@@ -83,7 +82,7 @@ const fire = (e) => {
 
                 game.shipCount -= 1;
 
-                if(game.shipCount < 1) {
+                if (!game.shipCount) {
                     header.textContent = 'Game Over';
                     header.style.color = 'red';
                     if (play.shot < play.record || play.record === 0) {
